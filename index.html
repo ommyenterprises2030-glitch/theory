@@ -33,34 +33,52 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Carousel Design */
+        /* Carousel Design with Expanded Height */
         .carousel-item img {
-            height: 520px;
-            object-fit: contain;
-            background-color: #0b0f12;
+            height: 620px;
+            object-fit: cover;
+            width: 100%;
         }
+        
+        /* High-contrast and clearly visible carousel caption box */
         .carousel-caption {
-            background: rgba(18, 22, 25, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(12, 15, 18, 0.92);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(245, 158, 11, 0.4);
             border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            text-align: left;
+            top: 50%;
+            transform: translateY(-50%);
+            bottom: auto;
+            left: 5% !important;
+            right: auto !important;
+            padding: 1.75rem !important;
+        }
+
+        .carousel-caption h3 {
+            color: #ffffff !important;
+            font-size: 1.75rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            font-weight: 700;
         }
 
         @media (max-width: 767.98px) {
             .carousel-item img {
-                height: 320px;
+                height: 480px;
             }
             .carousel-caption {
-                left: 5% !important;
-                right: 5% !important;
-                max-width: 90% !important;
-                bottom: 5% !important;
-                padding: 1rem !important;
+                position: relative !important;
+                inset: auto !important;
+                transform: none !important;
+                max-width: 100% !important;
+                margin: 15px;
+                background: rgba(12, 15, 18, 0.96);
             }
         }
 
-        /* Card Elegance */
+        /* Card Elegance & Full Screen Mobile Book Cover Fit */
         .card {
             transition: all 0.3s ease;
             border-radius: 1rem;
@@ -71,6 +89,26 @@
         .card:hover {
             transform: translateY(-6px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        .book-img-container {
+            height: 420px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .book-img-container img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 767.98px) {
+            .book-img-container {
+                height: 450px;
+            }
         }
 
         /* Reader Modal */
@@ -88,7 +126,6 @@
             object-fit: contain;
         }
 
-        /* Custom Buttons & Non-Blocking Category Banner */
         .btn-warning {
             background-color: var(--accent-gold);
             border-color: var(--accent-gold);
@@ -183,7 +220,7 @@
         </div>
     </main>
 
-    <!-- ================= PURCHASE OPTION MODAL (RADIO SELECTOR) ================= -->
+    <!-- ================= PURCHASE OPTION MODAL ================= -->
     <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4">
@@ -317,9 +354,7 @@
     <!-- ================= APP LOGIC & GOOGLE SHEETS INTEGRATION ================= -->
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwPYlNDahtFaFc2IDoch0w_WSA-ShkUQo61serJZt8lxoOggwYHiBHs3ypbJg9tEXuI1Q/exec";
-        
-        // WEKA NAMBA YAKO YA WHATSAPP HAPA (mfano: 255712345678 bila alama ya kujumlisha)
-        const MY_WHATSAPP_NUMBER = "255689571788";
+        const MY_WHATSAPP_NUMBER = "255700000000";
 
         let books = [];
         let cart = [];
@@ -364,12 +399,13 @@
 
                 carouselInner.innerHTML += `
                     <div class="carousel-item ${isActive}">
-                        <img src="${book.cover_url || 'https://images.unsplash.com/photo-1507842229443-77d83810fc64?auto=format&fit=crop&w=1200&q=80'}" class="d-block w-100" alt="${book.title}">
-                        <div class="carousel-caption text-start rounded-4 p-4 shadow-lg" style="left: 8%; right: auto; max-width: 440px; bottom: 15%;">
+                        <img src="${book.cover_url || 'https://images.unsplash.com/photo-1507842229443-77d83810fc64?auto=format&fit=crop&w=1200&q=80'}" alt="${book.title}">
+                        <div class="carousel-caption rounded-4 p-4 shadow-lg">
                             <span class="badge advanced-category-banner mb-2 py-2 px-3">${book.category || 'Featured'}</span>
-                            <h3 class="fw-bold text-white fs-3 mb-2">${book.title}</h3>
+                            <h3 class="fw-bold text-white mb-2">${book.title}</h3>
+                            <p class="text-warning fw-semibold small mb-2"><i class="bi bi-person-fill me-1"></i> Na ${book.author || 'Mwandishi Asiyejulikana'}</p>
                             <p class="text-light small mb-3 text-opacity-75">${book.description || 'Gundua simulizi hii ya kusisimua leo.'}</p>
-                            <div class="bg-dark bg-opacity-50 p-2 rounded-3 mb-3 border border-secondary border-opacity-50 small">
+                            <div class="bg-dark bg-opacity-75 p-2 rounded-3 mb-3 border border-secondary small">
                                 <div class="d-flex justify-content-between text-light mb-1"><span>Hardcopy:</span> <strong class="text-warning">Tshs ${hardPrice.toLocaleString()}</strong></div>
                                 <div class="d-flex justify-content-between text-light"><span>Softcopy:</span> <strong class="text-info">Tshs ${softPrice.toLocaleString()}</strong></div>
                             </div>
@@ -399,11 +435,8 @@
                 bookGrid.innerHTML += `
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                         <div class="card h-100 shadow-sm border-0">
-                            <div style="height: 320px; overflow: hidden; background-color: #f1f5f9;" class="position-relative">
-                                <img src="${book.cover_url || 'https://via.placeholder.com/400'}" 
-                                     class="w-100 h-100" 
-                                     style="object-fit: cover;" 
-                                     alt="${book.title}">
+                            <div class="book-img-container position-relative">
+                                <img src="${book.cover_url || 'https://via.placeholder.com/400'}" alt="${book.title}">
                             </div>
                             <div class="card-body d-flex flex-column p-4">
                                 <div class="mb-2">
@@ -540,7 +573,6 @@
             updateCart();
         }
 
-        // When user clicks "Malizia Ununuzi" from Cart Modal, open Checkout Form Modal
         checkoutBtn.addEventListener('click', function() {
             let cartModalEl = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
             cartModalEl.hide();
@@ -549,7 +581,6 @@
             checkoutModal.show();
         });
 
-        // Send order info and items directly to WhatsApp
         document.getElementById('sendWhatsAppBtn').addEventListener('click', function() {
             const fullName = document.getElementById('fullName').value.trim();
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
@@ -577,10 +608,8 @@
             const encodedMessage = encodeURIComponent(message);
             const whatsappURL = `https://wa.me/${MY_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-            // Open WhatsApp with formatted message
             window.open(whatsappURL, '_blank');
 
-            // Reset cart and modals
             cart = [];
             updateCart();
             let checkoutModalEl = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
