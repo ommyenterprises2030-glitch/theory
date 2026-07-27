@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Store | Premium Swahili Bookstore</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #121619;
+            --accent-gold: #f59e0b;
+            --soft-bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--soft-bg);
+            color: #334155;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(18, 22, 25, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Carousel Design */
+        .carousel-item img {
+            height: 520px;
+            object-fit: contain;
+            background-color: #0b0f12;
+        }
+        .carousel-caption {
+            background: rgba(18, 22, 25, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 767.98px) {
+            .carousel-item img {
+                height: 320px;
+            }
+            .carousel-caption {
+                left: 5% !important;
+                right: 5% !important;
+                max-width: 90% !important;
+                bottom: 5% !important;
+                padding: 1rem !important;
+            }
+        }
+
+        /* Card Elegance */
+        .card {
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e2e8f0 !important;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        /* Reader Modal */
+        .reader-page-container {
+            min-height: 450px;
+            max-height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+        }
+        .reader-page-container img {
+            max-height: 550px;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        /* Custom Buttons & Non-Blocking Category Banner */
+        .btn-warning {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            font-weight: 600;
+        }
+        .btn-warning:hover {
+            background-color: #d97706;
+            border-color: #d97706;
+        }
+
+        .advanced-category-banner {
+            background-color: #198754;
+            color: #ffffff;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 50rem;
+            box-shadow: 0 2px 8px rgba(25, 135, 84, 0.3);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3 text-white" href="#"><i class="bi bi-book-half text-warning me-2"></i>Theory<span class="text-warning">Store</span></a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item px-2"><a class="nav-link active text-warning fw-semibold" href="#">Nyumbani</a></li>
+                    <li class="nav-item px-2"><a class="nav-link text-light" href="#catalog">Vitabu</a></li>
+                    <li class="nav-item px-2"><a class="nav-link text-light" href="#contact">Mawasiliano</a></li>
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+                        <button class="btn btn-warning position-relative px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#cartModal">
+                            <i class="bi bi-cart3 me-1"></i> Kikapu
+                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= GOOGLE SHEETS DYNAMIC SLIDESHOW ================= -->
+    <div id="heroCarousel" class="carousel slide shadow-lg mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators" id="carousel-indicators"></div>
+        <div class="carousel-inner" id="carousel-inner">
+            <div class="carousel-item active text-center py-5 bg-dark text-white">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading slideshow items...</span>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- ================= BOOK CATALOG ================= -->
+    <main class="container mb-5" id="catalog">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="mb-3">
+                    <span class="advanced-category-banner" style="font-size: 0.85rem; padding: 8px 20px;">
+                        <i class="bi bi-bookmark-star-fill text-warning"></i> Maktaba Yetu Teule
+                    </span>
+                </div>
+                <h2 class="fw-bold display-6">Vitabu Vyenye Simulizi Bora</h2>
+                <p class="text-muted lead fs-6">Jipatie Simulizi Pendwa Kwa Lugha ya Kiswahili - Hardcopy na Softcopy</p>
+            </div>
+        </div>
+
+        <div id="book-grid" class="row g-4">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading books...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= PURCHASE OPTION MODAL (RADIO SELECTOR) ================= -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-dark text-white px-4 py-3">
+                    <h5 class="modal-title fw-bold fs-5 text-warning" id="purchaseModalTitle">Chagua Aina ya Kitabu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">Tafadhali chagua kama unataka nakala ngumu (Hardcopy) au nakala laini (Softcopy):</p>
+                    <form id="purchaseForm">
+                        <div class="list-group">
+                            <label class="list-group-item d-flex gap-3 align-items-center py-3 cursor-pointer">
+                                <input class="form-check-input flex-shrink-0" type="radio" name="formatRadio" id="radioHard" value="hard" checked>
+                                <span class="d-block text-start">
+                                    <strong class="text-dark">Hardcopy</strong>
+                                    <small class="d-block text-muted" id="hardPriceText">Tshs 0</small>
+                                </span>
+                            </label>
+                            <label class="list-group-item d-flex gap-3 align-items-center py-3 cursor-pointer mt-2">
+                                <input class="form-check-input flex-shrink-0" type="radio" name="formatRadio" id="radioSoft" value="soft">
+                                <span class="d-block text-start">
+                                    <strong class="text-dark">Softcopy</strong>
+                                    <small class="d-block text-muted" id="softPriceText">Tshs 0</small>
+                                </span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Ghairi</button>
+                    <button type="button" class="btn btn-warning rounded-pill px-4" id="confirmPurchaseBtn">Thibitisha & Ongeza</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SAMPLE READER MODAL ================= -->
+    <div class="modal fade" id="readerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="modal-header bg-dark text-white px-4 py-3">
+                    <h5 class="modal-title fs-5" id="readerModalTitle"><i class="bi bi-book me-2 text-warning"></i>Kusoma Sampuli</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 reader-page-container">
+                    <div id="reader-page-view" class="w-100 text-center"></div>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3 d-flex justify-content-between align-items-center">
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="prev-page-btn" onclick="changePage(-1)" disabled>
+                        <i class="bi bi-arrow-left me-1"></i> Ukurasa uliopita
+                    </button>
+                    <span id="page-indicator" class="fw-bold small text-dark">Ukurasa 1 ya 2</span>
+                    <button class="btn btn-dark btn-sm rounded-pill px-3" id="next-page-btn" onclick="changePage(1)">
+                        Ukurasa unaofuata <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CART MODAL ================= -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-dark text-white px-4 py-3">
+                    <h5 class="modal-title fw-bold fs-5"><i class="bi bi-cart3 me-2 text-warning"></i>Kikapu Chako</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <ul id="cart-items" class="list-group mb-3 border-0">
+                        <li class="list-group-item text-muted text-center border-0 py-4">Kikapu chako kiko tupu.</li>
+                    </ul>
+                    <hr class="text-muted">
+                    <div class="d-flex justify-content-between fw-bold fs-5 px-2">
+                        <span>Jumla:</span>
+                        <span id="cart-total" class="text-warning">Tshs 0</span>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Funga</button>
+                    <button type="button" class="btn btn-warning rounded-pill px-4" id="checkout-btn" disabled>Malizia Ununuzi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CHECKOUT FORM MODAL (WHATSAPP) ================= -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-success text-white px-4 py-3">
+                    <h5 class="modal-title fw-bold fs-5"><i class="bi bi-whatsapp me-2"></i>Taarifa za Malipo na Mkopokeaji</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="whatsappCheckoutForm">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label fw-semibold small">Majina Yako Kamili</label>
+                            <input type="text" class="form-control rounded-3" id="fullName" placeholder="Mf. Juma Ally" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label fw-semibold small">Namba ya Simu (WhatsApp)</label>
+                            <input type="tel" class="form-control rounded-3" id="phoneNumber" placeholder="Mf. 0712345678" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label fw-semibold small">Anwani / Mahali Ulipo (Address)</label>
+                            <textarea class="form-control rounded-3" id="address" rows="2" placeholder="Mf. Dar es Salaam, Kinondoni" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Rudi</button>
+                    <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" id="sendWhatsAppBtn"><i class="bi bi-whatsapp me-1"></i> Tuma Agizo WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-dark text-white py-5 mt-5 border-top border-secondary">
+        <div class="container text-center">
+            <h3 class="fw-bold mb-3"><i class="bi bi-book-half text-warning me-2"></i>TheoryStore</h3>
+            <p class="text-muted small mb-3">Sehemu sahihi ya kupata simulizi, riwaya, na vitabu bora vya Kiswahili kwa urahisi.</p>
+            <p class="text-secondary small mb-0">&copy; 2026 Theory Store. Haki zote zimehifadhiwa.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ================= APP LOGIC & GOOGLE SHEETS INTEGRATION ================= -->
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwPYlNDahtFaFc2IDoch0w_WSA-ShkUQo61serJZt8lxoOggwYHiBHs3ypbJg9tEXuI1Q/exec";
+        
+        // WEKA NAMBA YAKO YA WHATSAPP HAPA (mfano: 255712345678 bila alama ya kujumlisha)
+        const MY_WHATSAPP_NUMBER = "255689571788";
+
+        let books = [];
+        let cart = [];
+        let currentSampleBook = null;
+        let currentPage = 1;
+        let activeBookForPurchase = null;
+
+        async function fetchBooksFromSheet() {
+            try {
+                const response = await fetch(WEB_APP_URL);
+                books = await response.json();
+                renderCarousel();
+                renderBooks();
+            } catch (error) {
+                document.getElementById('book-grid').innerHTML = `
+                    <div class="col-12 text-center text-danger py-5">
+                        <p class="fw-semibold">Imeshindikana kupakia vitabu kutoka Google Sheets. Tafadhali kagua muunganisho wako.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCarousel() {
+            const carouselIndicators = document.getElementById('carousel-indicators');
+            const carouselInner = document.getElementById('carousel-inner');
+            
+            carouselIndicators.innerHTML = '';
+            carouselInner.innerHTML = '';
+
+            if (books.length === 0) return;
+
+            const slideBooks = books.slice(0, 3);
+
+            slideBooks.forEach((book, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                const hardPrice = parseFloat(book.hardcopy_price || 15000);
+                const softPrice = parseFloat(book.softcopy_price || 10000);
+                
+                carouselIndicators.innerHTML += `
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="${index}" ${isActive ? 'class="active" aria-current="true"' : ''} aria-label="Slide ${index + 1}"></button>
+                `;
+
+                carouselInner.innerHTML += `
+                    <div class="carousel-item ${isActive}">
+                        <img src="${book.cover_url || 'https://images.unsplash.com/photo-1507842229443-77d83810fc64?auto=format&fit=crop&w=1200&q=80'}" class="d-block w-100" alt="${book.title}">
+                        <div class="carousel-caption text-start rounded-4 p-4 shadow-lg" style="left: 8%; right: auto; max-width: 440px; bottom: 15%;">
+                            <span class="badge advanced-category-banner mb-2 py-2 px-3">${book.category || 'Featured'}</span>
+                            <h3 class="fw-bold text-white fs-3 mb-2">${book.title}</h3>
+                            <p class="text-light small mb-3 text-opacity-75">${book.description || 'Gundua simulizi hii ya kusisimua leo.'}</p>
+                            <div class="bg-dark bg-opacity-50 p-2 rounded-3 mb-3 border border-secondary border-opacity-50 small">
+                                <div class="d-flex justify-content-between text-light mb-1"><span>Hardcopy:</span> <strong class="text-warning">Tshs ${hardPrice.toLocaleString()}</strong></div>
+                                <div class="d-flex justify-content-between text-light"><span>Softcopy:</span> <strong class="text-info">Tshs ${softPrice.toLocaleString()}</strong></div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow-sm" onclick="openPurchaseModal(${books.indexOf(book)})"><i class="bi bi-cart-plus me-1"></i> Nunua Sasa</button>
+                                <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="openSampleReader(${books.indexOf(book)})"><i class="bi bi-book-half me-1"></i> Soma Sampuli</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderBooks() {
+            const bookGrid = document.getElementById('book-grid');
+            bookGrid.innerHTML = '';
+
+            if (books.length === 0) {
+                bookGrid.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Hakuna vitabu vilivyopatikana kwenye mfumo.</p></div>';
+                return;
+            }
+
+            books.forEach((book, index) => {
+                const hardPrice = parseFloat(book.hardcopy_price || 15000);
+                const softPrice = parseFloat(book.softcopy_price || 10000);
+
+                bookGrid.innerHTML += `
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div style="height: 320px; overflow: hidden; background-color: #f1f5f9;" class="position-relative">
+                                <img src="${book.cover_url || 'https://via.placeholder.com/400'}" 
+                                     class="w-100 h-100" 
+                                     style="object-fit: cover;" 
+                                     alt="${book.title}">
+                            </div>
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="mb-2">
+                                    <span class="badge advanced-category-banner shadow-sm">${book.category || 'General'}</span>
+                                </div>
+                                <h5 class="card-title fw-bold text-dark mb-1">${book.title}</h5>
+                                <p class="card-text text-muted small mb-2">Na ${book.author}</p>
+                                <p class="card-text small text-secondary text-truncate mb-3">${book.description || ''}</p>
+                                <div class="mt-auto">
+                                    <div class="mb-3 bg-light p-2 rounded-3 small border">
+                                        <div class="d-flex justify-content-between text-secondary"><span>Hardcopy:</span> <strong class="text-dark">Tshs ${hardPrice.toLocaleString()}</strong></div>
+                                        <div class="d-flex justify-content-between text-secondary"><span>Softcopy:</span> <strong class="text-dark">Tshs ${softPrice.toLocaleString()}</strong></div>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-dark btn-sm rounded-pill fw-semibold py-2 shadow-sm" onclick="openPurchaseModal(${index})"><i class="bi bi-cart-plus me-1"></i> Ongeza Kikapuni</button>
+                                        <button class="btn btn-sm btn-light border rounded-pill text-dark fw-medium py-2" onclick="openSampleReader(${index})"><i class="bi bi-eye me-1"></i> Soma Kurasa 2 za Awali</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openPurchaseModal(index) {
+            activeBookForPurchase = books[index];
+            const hardPrice = parseFloat(activeBookForPurchase.hardcopy_price || 15000);
+            const softPrice = parseFloat(activeBookForPurchase.softcopy_price || 10000);
+
+            document.getElementById('purchaseModalTitle').textContent = `Chagua Aina: ${activeBookForPurchase.title}`;
+            document.getElementById('hardPriceText').textContent = `Tshs ${hardPrice.toLocaleString()}`;
+            document.getElementById('softPriceText').textContent = `Tshs ${softPrice.toLocaleString()}`;
+            
+            document.getElementById('radioHard').checked = true;
+
+            let purchaseModal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+            purchaseModal.show();
+        }
+
+        document.getElementById('confirmPurchaseBtn').addEventListener('click', function() {
+            if (!activeBookForPurchase) return;
+
+            const isHard = document.getElementById('radioHard').checked;
+            const hardPrice = parseFloat(activeBookForPurchase.hardcopy_price || 15000);
+            const softPrice = parseFloat(activeBookForPurchase.softcopy_price || 10000);
+
+            if (isHard) {
+                cart.push({ title: `${activeBookForPurchase.title} (Hardcopy)`, price: hardPrice });
+            } else {
+                cart.push({ title: `${activeBookForPurchase.title} (Softcopy)`, price: softPrice });
+            }
+
+            updateCart();
+            
+            let purchaseModalEl = bootstrap.Modal.getInstance(document.getElementById('purchaseModal'));
+            purchaseModalEl.hide();
+
+            let cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+            cartModal.show();
+        });
+
+        function openSampleReader(index) {
+            currentSampleBook = books[index];
+            currentPage = 1;
+            updateReaderContent();
+            let readerModal = new bootstrap.Modal(document.getElementById('readerModal'));
+            readerModal.show();
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > 2) currentPage = 2;
+            updateReaderContent();
+        }
+
+        function updateReaderContent() {
+            document.getElementById('readerModalTitle').innerHTML = `<i class="bi bi-book me-2 text-warning"></i>${currentSampleBook.title} — Ukurasa ${currentPage} ya 2`;
+            const pageViewContainer = document.getElementById('reader-page-view');
+            const pageIndicator = document.getElementById('page-indicator');
+            const prevBtn = document.getElementById('prev-page-btn');
+            const nextBtn = document.getElementById('next-page-btn');
+
+            pageIndicator.textContent = `Ukurasa ${currentPage} ya 2`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === 2;
+
+            let targetImg = currentPage === 1 ? currentSampleBook.page1_url : currentSampleBook.page2_url;
+            if (!targetImg) {
+                targetImg = 'https://via.placeholder.com/600x800?text=Sample+Page+Not+Available';
+            }
+
+            pageViewContainer.innerHTML = `<img src="${targetImg}" alt="Sample Page ${currentPage}" class="img-fluid">`;
+        }
+
+        const cartCount = document.getElementById('cart-count');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        function updateCart() {
+            cartCount.textContent = cart.length;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<li class="list-group-item text-muted text-center border-0 py-4">Kikapu chako kiko tupu.</li>';
+                cartTotal.textContent = 'Tshs 0';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, cartIndex) => {
+                total += parseFloat(item.price);
+                cartItems.innerHTML += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-2 bg-light rounded-3 mb-2">
+                        <span class="text-truncate me-2 fw-medium" style="max-width: 55%;">${item.title}</span>
+                        <div class="text-end">
+                            <span class="text-success me-2 small fw-bold">Tshs ${parseFloat(item.price).toLocaleString()}</span>
+                            <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeFromCart(${cartIndex})"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </li>
+                `;
+            });
+
+            cartTotal.textContent = `Tshs ${total.toLocaleString()}`;
+            checkoutBtn.disabled = false;
+        }
+
+        function removeFromCart(cartIndex) {
+            cart.splice(cartIndex, 1);
+            updateCart();
+        }
+
+        // When user clicks "Malizia Ununuzi" from Cart Modal, open Checkout Form Modal
+        checkoutBtn.addEventListener('click', function() {
+            let cartModalEl = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+            cartModalEl.hide();
+
+            let checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+            checkoutModal.show();
+        });
+
+        // Send order info and items directly to WhatsApp
+        document.getElementById('sendWhatsAppBtn').addEventListener('click', function() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (!fullName || !phoneNumber || !address) {
+                alert('Tafadhali jaza taarifa zote zinazohitajika (Majina, Namba ya Simu, na Address).');
+                return;
+            }
+
+            let message = `Habari TheoryStore! Ninaomba kununua vitabu vifuatavyo:\n\n`;
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                message += `${index + 1}. *${item.title}* - Tshs ${parseFloat(item.price).toLocaleString()}\n`;
+                total += parseFloat(item.price);
+            });
+
+            message += `\n*Jumla Kuu:* Tshs ${total.toLocaleString()}\n\n`;
+            message += `*TAARIFA ZA MPOKEAJI:*\n`;
+            message += `• Jina: ${fullName}\n`;
+            message += `• Simu: ${phoneNumber}\n`;
+            message += `• Address: ${address}\n`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/${MY_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            // Open WhatsApp with formatted message
+            window.open(whatsappURL, '_blank');
+
+            // Reset cart and modals
+            cart = [];
+            updateCart();
+            let checkoutModalEl = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
+            checkoutModalEl.hide();
+        });
+
+        fetchBooksFromSheet();
+    </script>
+</body>
+</html>
